@@ -19,14 +19,14 @@ The Anti-ZBCRP does the opposite and looks to buy stocks
 that have gone down and sell stocks that have gone up
 """
 
-function online_zbcrp(X, k, Anti, abs_exp = False)
+function online_zbcrp(X, k, Anti, abs_exp = false)
     exp_tup = X[:,:]
     M = size(exp_tup)[2]
     onesM = ones(M)
     if Anti == false
-        mu = colwise(mean,exp_tup)
+        mu = vec(mean(exp_tup.values, 1))
     else
-        mu = - colwise(mean,exp_tup)
+        mu = vec(- mean(exp_tup.values, 1))
     end
 
     if abs_exp == true
@@ -34,7 +34,7 @@ function online_zbcrp(X, k, Anti, abs_exp = False)
             sigma = eye(M)
             inv_sigma = sigma
         else
-            sigma = cov(exp_tup)
+            sigma = cov(exp_tup.values)
             if cond(sigma) < (1/1e-2) && k > M
                 inv_sigma = inv(sigma)
             else
@@ -54,7 +54,7 @@ function online_zbcrp(X, k, Anti, abs_exp = False)
             sigma = eye(M)
             inv_sigma = sigma
         else
-            sigma = cov(exp_tup)
+            sigma = cov(exp_tup.values)
             if cond(sigma) < (1/1e-2) && k > M
                 inv_sigma = inv(sigma)
             else
@@ -102,12 +102,12 @@ time periods. Essentially the algorithm tries to buy stocks
 that will mean revert upwards and short stocks that will mean
 revert downwards."""
 
-function online_anticor(X, K, T, H0, abs_exp)
+function online_anticor(X, K, T, H0, abs_exp = false)
     if T < 2*K
         b = H0
     else
         b = Vector{Float64}(size(X)[2]) .= 0
-        exp_tup = X[:,:]
+        exp_tup = X.values
         M = size(exp_tup)[2]
         LX1 = exp_tup[end-2*K+1:end-K,:]-1
         LX2 = exp_tup[end-K+1:end,:]-1
@@ -144,7 +144,7 @@ function online_anticor(X, K, T, H0, abs_exp)
                 H1[i] = H0[i] + 1/3*(sum(claims[:,i] - claims[i,:]))
             end
         end
-        b = ReNormAgMix(H1, absExp)
+        b = re_norm_arg_mix(H1, abs_exp)
     end
     return b
 end

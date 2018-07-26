@@ -25,8 +25,8 @@ and calls the relevant functions to renormalize etc."""
 
 function online_learn(q0, b0, x, H0, H1, S_t0, S_n0, Rule_g, eta, absol)
 
-    S_t1 = min(S_t0, 1) * (transpose(b0) * (x-1)+1) + max(0, S_t0-1)
-    S_n1 = min.(S_n0, 1) .* (H0 * (x-1)+1) + max.(0, S_n0-1)
+    S_t1 = min(S_t0, 1) * ((x.values-1) * b0 +1) + max(0, S_t0-1)
+    S_n1 = min.(S_n0, 1) .* (H0 * transpose(x.values-1)  +1) + max.(0, S_n0-1)
 
     q1 = online_function(Rule_g, q0, S_n1, eta, absol)
     b1 = transpose(H1) * q1
@@ -36,7 +36,7 @@ function online_learn(q0, b0, x, H0, H1, S_t0, S_n0, Rule_g, eta, absol)
         b1 = 1/v * b1
         q1 = 1/v *q1
     end
-    return b1, q1, S_t1, S_n1
+    return b1, q1, S_t1[1], S_n1
 end
 
 function online_function(g, q0, PL_t, eta, absol)

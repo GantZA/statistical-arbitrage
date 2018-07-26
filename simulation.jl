@@ -36,7 +36,7 @@ expert algorithms and learning algorithm. The Simulation function performs a bac
 on the given dataset and using the given parameters"""
 
 function simulation(date_ind, start_date, end_date,
-    date_vec, X, K, W, lambda, learn_alg, abs_port, abs_exp)
+     X, K, W, lambda, learn_alg, abs_port = false, abs_exp = false)
 
     if date_ind == true
         start_ind = find(date_vec .== start_date)[1]
@@ -51,17 +51,17 @@ function simulation(date_ind, start_date, end_date,
     M = size(X)[2]
     N = sum(K)
 
-    q_mat = DataFrame(Matrix(N,T) .= 0)
-    b_mat = DataFrame(Matrix(M,T) .= 0)
+    q_mat = Matrix(N,T) .= 0
+    b_mat = Matrix(M,T) .= 0
 
-    if absExp == true
-        H_mat =  [DataFrame(Matrix(N,M) .= 1/M)]
+    if abs_exp == true
+        H_mat =  [Matrix(N,M) .= 1/M]
     else
-        absPort = false
-        H_mat =  [DataFrame(Matrix(N,M) .= 0)]
+        abs_port = false
+        H_mat =  [Matrix(N,M) .= 0]
     end
 
-    if absPort == true
+    if abs_port == true
         b_mat[:, 1] = 1/M
         q_mat[:,1] = 1/N
     else
@@ -69,18 +69,14 @@ function simulation(date_ind, start_date, end_date,
         q_mat[:,1] = zeros(N)
     end
 
-    S_t = DataFrame(Vector(T+1) .= 0)
+    S_t = Vector(T+1) .= 0
     S_t[1] = 1
 
-    S_nt = DataFrame(Matrix(N,T+1) .= 1)
+    S_nt = Matrix(N,T+1) .= 1
 
     for t in 2:T
-        H1 = Exp_Gen(K, W, M, X[1:(t-1),:],
-        H_mat[(t-1)], absExp)
-
-        b_mat[: , t], q_mat[:, t], S_t[t],
-        S_nt[:,t] = OnlineLearn(q_mat[:, (t-1)],
-        b_mat[:, (t-1)], X[(t-1),:], H_mat[(t-1)],
+        H1 = exp_gen(K, W, M, X[1:(t-1),:], H_mat[(t-1)])
+        b_mat[: , t], q_mat[:, t], S_t[t], S_nt[:,t] =online_learn(q_mat[:, (t-1)], b_mat[:, (t-1)], X[(t-1),:], H_mat[(t-1)],
         H1, S_t[t-1], S_nt[:, (t-1)] ,
         learn_alg, lambda, abs_port)
 
@@ -88,11 +84,11 @@ function simulation(date_ind, start_date, end_date,
     end
 
     S_t[end] = min(S_t[end-1], 1) *
-    (transpose(X[end,:]-1) * b_mat[:, end] + 1) +
+    (transpose(X.values[end,:]-1) * b_mat[:, end] + 1) +
      max(0, S_t[end-1] - 1)
 
     S_nt[:,end] = min.(S_nt[:,end-1], 1) .*
-    ((H_mat[end] * (X[end,:]-1)) + 1) + max.(0,S_nt[:,end-1] - 1)
+    ((H_mat[end] * (X.values[end,:]-1)) + 1) + max.(0,S_nt[:,end-1] - 1)
 
     return b_mat, q_mat, S_t, S_nt, H_mat
 end
@@ -108,10 +104,10 @@ function exp_alg(W, X, K, T, H0)
     end
 end
 """Iterates through all experts in one time period"""
-function exp_gen(K, W, M, stocks, H0, absExp)
+function exp_gen(K, W, M, stocks, H0, abs_exp = false)
     T = size(stocks)[1]
     N = sum(K)
-    H_mat = DataFrame(Matrix(N,M) .= 0)
+    H_mat = Matrix(N,M) .= 0
     mat_ind = 0
     for w in W[1] : W[2]
         for k in 1:K[w]
@@ -119,11 +115,10 @@ function exp_gen(K, W, M, stocks, H0, absExp)
             if w == 3
                 H_mat[mat_ind,:] = exp_alg(w,
                 stocks[(end - min(2*k, T) +1 : end),:],
-                min(k, T), T, H0[mat_ind,:], abs_exp)
+                min(k, T), T, H0[mat_ind,:])
             else
-                H_mat[mat_ind,:] = exp_alg(w,
-                stocks[(end - min(k, T) +1 : end),:],
-                min(k, T), 0, 0, abs_exp)
+                H_mat[mat_ind,:] = exp_alg(w, stocks[(end - min(k, T) +1 : end),:],
+                min(k, T), 0, 0)
             end
         end
     end
