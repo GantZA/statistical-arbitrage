@@ -1,2 +1,2 @@
 # statistical-arbitrage
-TBA
+TBD
