@@ -26,9 +26,11 @@ and calls the relevant functions to renormalize etc."""
 function online_learn(q0, b0, x, H0, H1, S_t0, S_n0, Rule_g, eta, absol)
 
     S_t1 = min(S_t0, 1) * ((x.values-1) * b0 +1) + max(0, S_t0-1)
-    S_n1 = min.(S_n0, 1) .* (H0 * transpose(x.values-1)  +1) + max.(0, S_n0-1)
+    S_n1 = min.(S_n0[:,end], 1) .* (H0 * transpose(x.values-1)  +1) + max.(0, S_n0[:,end]-1)
+    S_n_curr = hcat(S_n0, S_n1)
+    q1 = online_function(Rule_g, q0, S_n_curr, eta, absol)
+    #q1 = online_function_mwa(Rule_g, q0, S_n1, eta, absol)
 
-    q1 = online_function(Rule_g, q0, S_n1, eta, absol)
     b1 = transpose(H1) * q1
 
     v = sum(abs.(b1))
@@ -41,7 +43,7 @@ end
 
 function online_function(g, q0, PL_t, eta, absol)
     if g == "Uni"
-        q1 = PL_t
+        q1 = PL_t[:,end]
         q1 = re_norm_arg_mix(q1, absol)
     elseif g == "EG"
         if all(isapprox.(q0,0)) == true
@@ -55,15 +57,29 @@ function online_function(g, q0, PL_t, eta, absol)
         end
     elseif g == "EWMA"
         if all(isapprox.(q0,0)) == true
-            q1 = PL_t
+            q1 = PL_t[:,end]
             q1 = re_norm_arg_mix(q1, absol)
         else
-            q1 = eta*q0 + (1-eta)*(q0 .* PL_t)/(transpose(q0)*PL_t)
+            q1 = eta*q0 + (1-eta)*(q0 .* PL_t[:,end])/(transpose(q0)*PL_t[:,end])
             q1 = re_norm_arg_mix(q1, absol)
         end
+    elseif g == "Uni EWMA"
+        q1 = weighted_returns(PL_t)
+        q1 = re_norm_arg_mix(q1, absol)
     end
     return q1
 end
+
+
+
+function weighted_returns(PL, window=50)
+    if size(PL)[2] >= window
+        return exp.(PL[:,end]-PL[:,end-window+1])
+    else
+        return PL[:,end]
+    end
+end
+
 
 function re_norm_arg_mix(q0, absol)
     if absol == true
