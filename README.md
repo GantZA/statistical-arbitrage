@@ -1,4 +1,4 @@
-# statistical-arbitrage 
+# Test for Statistical Arbitrage 
 TBD<br />
 Test for Statistical Arbitrage (modified definition) following the methodology in Hogan et al. (2004) and Jarrow et al. (2012).
 
