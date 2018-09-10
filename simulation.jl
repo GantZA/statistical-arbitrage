@@ -81,8 +81,9 @@ function simulation(date_ind, start_date, end_date,
         #learn_alg, lambda, abs_port)
 
         H1 = exp_gen(K, W, M, X[1:(t-1),:], H_mat[(t-1)])
-        b_mat[: , t], q_mat[:, t], S_t[t], S_nt[:,t] = online_learn(q_mat[:, (t-1)], b_mat[:, (t-1)], X[(t-1),:], H_mat[(t-1)],
-        H1, S_t[t-1], S_nt[:,1:(t-1)] , learn_alg, lambda, abs_port)
+        b_mat[: , t], q_mat[:, t], S_t[t], S_nt[:,t] = online_learn(q_mat[:, (t-1)],
+            b_mat[:, (t-1)], X[(t-1),:], H_mat[(t-1)],
+            H1, S_t[t-1], S_nt[:,1:(t-1)] , learn_alg, lambda, abs_port)
 
         H_mat = push!(H_mat, H1)
     end
