@@ -2,6 +2,7 @@
 TBD<br />
 Test for Statistical Arbitrage (modified definition) following the methodology in Hogan et al. (2004) and Jarrow et al. (2012).
 <br />
+test_stat_arb.jl contains relevant code to test, the rest is an implementation of online-learning zero-cost expert-based investment strategies
 <br />
 References <br />
 <br />
