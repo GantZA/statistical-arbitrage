@@ -1,10 +1,8 @@
 # Test for Statistical Arbitrage 
 TBD<br />
 Test for Statistical Arbitrage (modified definition) following the methodology in Hogan et al. (2004) and Jarrow et al. (2012).
-
-Input a vector of discounted trading profits
-
-
+<br />
+<br />
 References <br />
 <br />
 HOGAN, S., JARROW, R., TEO, M.,AND WARACHKA, M. (2004). Testing market efficiency using statistical arbitrage with applications to momentum and value strategies. Journal of Financial economics,73(3), 525–565.
