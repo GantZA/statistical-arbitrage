@@ -5,8 +5,8 @@ Test for Statistical Arbitrage (modified definition) following the methodology i
 Input a vector of discounted trading profits
 
 
-References//
-//
+References <br />
+<br />
 HOGAN, S., JARROW, R., TEO, M.,AND WARACHKA, M. (2004). Testing market efficiency using statistical arbitrage with applications to momentum and value strategies. Journal of Financial economics,73(3), 525–565.
 
 JARROW, R., TEO, M., TSE, Y. K.,AND WARACHKA, M. (2012). An improved test for statistical arbitrage. Journal of Financial Markets, 15 (1), 47–80.
