@@ -1,8 +1,8 @@
 # Test for Statistical Arbitrage (NOT WORKING ATM)
-TBD<br />
+TBD: Need to simulate critical t-values for Min_t statistic<br />
 Test for Statistical Arbitrage (modified definition) following the methodology in Hogan et al. (2004) and Jarrow et al. (2012).
 <br />
-test_stat_arb.jl contains relevant code to test, the rest is an implementation of online-learning zero-cost expert-based investment strategies
+test_stat_arb.jl contains relevant code to obtain MLE parameters for profit process, the rest is an implementation of online-learning zero-cost expert-based investment strategies
 <br />
 References <br />
 <br />
