@@ -1,6 +1,6 @@
 # Test for Statistical Arbitrage (NOT WORKING ATM)
 <br />
-TBD: Need to simulate critical t-values for Min_t statistic<br />
+TBD: Need to simulate Min_t statistics to obtain empirical distribution<br />
 <br />
 Will publish working constrained mean test shortly
 <br />
